@@ -2,9 +2,36 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
+const isVideoFile = function (file) {
+  const allowedExtensions = [".mkv", ".mp4"];
+  const ext = path.extname(file.originalname);
+  return allowedExtensions.includes(ext);
+};
+
+const isImageFile = function (file) {
+  const allowedExtensions = [".png", ".jpg", ".jpeg"];
+  const ext = path.extname(file.originalname);
+  return allowedExtensions.includes(ext);
+};
+const isPdfFile = function (file) {
+  const allowedExtensions = [".pdf"];
+  const ext = path.extname(file.originalname);
+  return allowedExtensions.includes(ext);
+};
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = "public/videos";
+    let uploadDir;
+
+    if (isVideoFile(file)) {
+      uploadDir = "public/videos";
+    } else if (isImageFile(file)) {
+      uploadDir = "public/images";
+    } else if (isPdfFile(file)) {
+      uploadDir = "public/pdfs";
+    } else {
+      return cb(new Error("Invalid file type"));
+    }
 
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -21,19 +48,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 500 * 1024 * 1024, // 50 MB limit
-  },
-  fileFilter: function (req, file, cb) {
-    const allowedExtensions = [".mkv", ".mp4"];
-    const ext = path.extname(file.originalname);
-
-    if (!allowedExtensions.includes(ext)) {
-      return cb(
-        new Error("Only videos with .mkv and .mp4 extensions are allowed!")
-      );
-    }
-
-    cb(null, true);
+    fileSize: 500 * 1024 * 1024,
   },
 });
 
@@ -44,7 +59,6 @@ const handleMulterError = (err, req, res, next) => {
   } else if (err) {
     return res.status(500).json({ error: err.message });
   }
-
   next();
 };
 
