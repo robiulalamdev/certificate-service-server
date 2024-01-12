@@ -13,6 +13,8 @@ const registerUser = async (req, res) => {
     const isVerified = isExist?.isVerified;
     if (isExist && isVerified === true) {
       return res.status(403).send({
+        success: false,
+        type: "email",
         message: `${req.body.email} is already Exist!`,
         status: 403,
       });
@@ -27,6 +29,8 @@ const registerUser = async (req, res) => {
       await sendVerificationCode(updatedUser, otp);
 
       res.status(200).send({
+        success: true,
+        type: "verification",
         message: "We have sent you verification code. Please check your email!",
         status: 200,
       });
@@ -34,7 +38,7 @@ const registerUser = async (req, res) => {
       const otp = randomstring.generate({ length: 5, charset: "numeric" });
       const newUser = new User({
         role: req.body.role,
-        name: req.body.name,
+        full_name: req.body.full_name,
         email: req.body.email,
         password: bcrcypt.hashSync(req.body.password),
         otp,
@@ -42,6 +46,8 @@ const registerUser = async (req, res) => {
       const user = await newUser.save();
       await sendVerificationCode(user, otp);
       res.status(200).send({
+        success: true,
+        type: "verification",
         message: "We have sent you verification code. Please check your email!",
         status: 200,
       });
@@ -58,6 +64,7 @@ const getUserInfo = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req?.user?._id });
     if (user) {
+      user["password"] = "";
       res.send(user);
     } else {
       res.send("User Not Found");
@@ -177,7 +184,7 @@ const deleteUser = async (req, res) => {
       .exec()
       .then((result) => {
         res.status(200).send({
-          message: `${result.name} is successfully removed!`,
+          message: `${result?.full_name} is successfully removed!`,
           status: 200,
         });
       })
@@ -196,7 +203,7 @@ const deleteUser = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id, {
-      name: 1,
+      full_name: 1,
       email: 1,
       isVerified: 1,
     });
