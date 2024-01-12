@@ -24,7 +24,7 @@ const createNotification = async (req, res) => {
 
 const getNotifications = async (req, res) => {
   try {
-    const result = await Notification.find({}).sort({ _id: -1 });
+    const result = await Notification.find({}).sort({ _id: -1 }).limit(100);
     res.status(200).json({
       success: true,
       message: "Notifications Retrieve Success",

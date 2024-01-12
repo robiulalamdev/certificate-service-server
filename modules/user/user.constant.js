@@ -1,4 +1,4 @@
-const userRoleEnum = ["User"];
+const userRoleEnum = ["User", "Admin"];
 
 module.exports = {
   userRoleEnum,

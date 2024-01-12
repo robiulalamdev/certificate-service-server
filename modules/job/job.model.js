@@ -7,8 +7,10 @@ const jobSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    pdf_documents: {
-      type: [String],
+    status: {
+      type: String,
+      enum: ["Rejected", "Pending", "Approved"],
+      default: "Pending",
       required: true,
     },
 

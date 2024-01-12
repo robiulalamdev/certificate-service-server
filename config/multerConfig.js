@@ -13,8 +13,19 @@ const isImageFile = function (file) {
   const ext = path.extname(file.originalname);
   return allowedExtensions.includes(ext);
 };
+
 const isPdfFile = function (file) {
   const allowedExtensions = [".pdf"];
+  const ext = path.extname(file.originalname);
+  return allowedExtensions.includes(ext);
+};
+const isDocFile = function (file) {
+  const allowedExtensions = [".doc"];
+  const ext = path.extname(file.originalname);
+  return allowedExtensions.includes(ext);
+};
+const isTxtFile = function (file) {
+  const allowedExtensions = [".txt"];
   const ext = path.extname(file.originalname);
   return allowedExtensions.includes(ext);
 };
@@ -29,6 +40,10 @@ const storage = multer.diskStorage({
       uploadDir = "public/images";
     } else if (isPdfFile(file)) {
       uploadDir = "public/pdfs";
+    } else if (isDocFile(file)) {
+      uploadDir = "public/docs";
+    } else if (isTxtFile(file)) {
+      uploadDir = "public/txts";
     } else {
       return cb(new Error("Invalid file type"));
     }
