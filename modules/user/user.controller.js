@@ -361,6 +361,36 @@ const updateUserInfo = async (req, res) => {
   }
 };
 
+const userImageUpdate = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.user?._id });
+    if (isExist) {
+      const result = await User.findByIdAndUpdate(
+        { _id: req.user?._id },
+        { image: req.file.path },
+        {
+          new: true,
+        }
+      );
+      res.status(200).json({
+        success: true,
+        message: "User Info Update successfully",
+        data: result,
+      });
+    } else {
+      res.status(201).json({
+        success: false,
+        message: "Update unsuccessful",
+      });
+    }
+  } catch (error) {
+    res.status(201).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -373,4 +403,5 @@ module.exports = {
   changePassword,
   checkIsExistEmail,
   updateUserInfo,
+  userImageUpdate,
 };

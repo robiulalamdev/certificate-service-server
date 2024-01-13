@@ -10,8 +10,10 @@ const {
   forgetPassword,
   changePassword,
   updateUserInfo,
+  userImageUpdate,
 } = require("./user.controller");
 const { isAuth } = require("../../utils/middleware");
+const { upload, handleMulterError } = require("../../config/multerConfig");
 
 const router = express.Router();
 
@@ -25,5 +27,14 @@ router.get("/:id", getUser);
 router.get("/user-info/me", isAuth, getUserInfo);
 router.post("/forgot-password", forgetPassword);
 router.post("/change-password", isAuth, changePassword);
+
+// image update
+router.patch(
+  "/update/image",
+  isAuth,
+  upload.single("image"),
+  handleMulterError,
+  userImageUpdate
+);
 
 module.exports = router;

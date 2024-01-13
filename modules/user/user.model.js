@@ -13,6 +13,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: false,
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: false,
+    },
     email: {
       type: String,
       required: true,
@@ -21,6 +30,18 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    phone: {
+      type: Object,
+      code: {
+        type: String,
+        required: false,
+      },
+      number: {
+        type: String,
+        required: false,
+      },
+      required: false,
     },
     otp: {
       type: String,
