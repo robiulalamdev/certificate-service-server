@@ -391,6 +391,48 @@ const userImageUpdate = async (req, res) => {
   }
 };
 
+const userInfoUpdate = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ _id: req.user?._id });
+    if (isExist) {
+      const isUsername = await User.findOne({
+        _id: { $ne: req.user?._id },
+        username: req.body?.username,
+      });
+      if (isUsername) {
+        res.status(201).json({
+          success: false,
+          type: "username",
+          message: "username already in use",
+        });
+      } else {
+        const result = await User.findByIdAndUpdate(
+          { _id: req.user?._id },
+          req.body,
+          {
+            new: true,
+          }
+        );
+        res.status(200).json({
+          success: true,
+          message: "User Info Update successfully",
+          data: result,
+        });
+      }
+    } else {
+      res.status(201).json({
+        success: false,
+        message: "Update unsuccessful",
+      });
+    }
+  } catch (error) {
+    res.status(201).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -404,4 +446,5 @@ module.exports = {
   checkIsExistEmail,
   updateUserInfo,
   userImageUpdate,
+  userInfoUpdate,
 };

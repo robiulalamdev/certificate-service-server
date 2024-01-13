@@ -11,6 +11,7 @@ const {
   changePassword,
   updateUserInfo,
   userImageUpdate,
+  userInfoUpdate,
 } = require("./user.controller");
 const { isAuth } = require("../../utils/middleware");
 const { upload, handleMulterError } = require("../../config/multerConfig");
@@ -36,5 +37,6 @@ router.patch(
   handleMulterError,
   userImageUpdate
 );
+router.patch("/update/info", isAuth, userInfoUpdate);
 
 module.exports = router;
