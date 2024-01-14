@@ -1,10 +1,15 @@
 const User = require("./user.model");
 const bcrcypt = require("bcryptjs");
 const randomstring = require("randomstring");
-const { generateToken, sendVerificationCode } = require("../../utils/auth");
+const {
+  generateToken,
+  sendVerificationCode,
+  forgotPasswordToken,
+} = require("../../utils/auth");
 const {
   sendForgotOTPMail,
   sendWelcomeMail,
+  sendForgotPasswordMail,
 } = require("../../utils/sendEmailHelpers");
 
 const registerUser = async (req, res) => {
@@ -433,6 +438,48 @@ const userInfoUpdate = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const isExist = await User.findOne({ email: req.body.email });
+    if (isExist) {
+      const currentDate = new Date();
+      const expirationDate = new Date(
+        currentDate.getTime() + 1 * 60 * 60 * 1000
+      );
+      const isoExpirationDate = expirationDate.toISOString();
+      const result = await User.findByIdAndUpdate(
+        { _id: isExist?._id },
+        { isPassword_reset: isoExpirationDate },
+        {
+          new: true,
+        }
+      );
+      const token = await forgotPasswordToken({
+        isPassword_reset: isoExpirationDate,
+        email: isExist.email,
+        _id: isExist?._id,
+      });
+      const isSend = await sendForgotPasswordMail(isExist, token);
+      res.status(200).json({
+        success: true,
+        message: "Password Reset success",
+        data: result,
+      });
+    } else {
+      res.status(201).json({
+        success: false,
+        type: "email",
+        message: "Account not Found!",
+      });
+    }
+  } catch (error) {
+    res.status(201).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -447,4 +494,5 @@ module.exports = {
   updateUserInfo,
   userImageUpdate,
   userInfoUpdate,
+  forgotPassword,
 };

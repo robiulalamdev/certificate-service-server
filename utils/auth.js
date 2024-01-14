@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 const generateToken = async (user) => {
   return jwt.sign(
     {
-      name: user.name,
+      full_name: user.full_name,
       email: user.email,
       _id: user?._id,
     },
@@ -14,6 +14,12 @@ const generateToken = async (user) => {
       expiresIn: "7days",
     }
   );
+};
+
+const forgotPasswordToken = async (data) => {
+  return jwt.sign(data, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1h",
+  });
 };
 
 // GMAIL service won't be used. Were using our smtp server.
@@ -89,4 +95,5 @@ style="background-color: #d9eee4; padding:10px; font-size:14px;color:#003399;lin
 module.exports = {
   generateToken,
   sendVerificationCode,
+  forgotPasswordToken,
 };

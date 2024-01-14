@@ -1,10 +1,11 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
-const sendForgotOTPMail = async (user, otp) => {
+const sendForgotPasswordMail = async (user, token) => {
+  console.log(token);
   const transporter = nodemailer.createTransport({
-    host: "",
-    port: 465,
+    host: process.env.MAIL_USER,
+    port: 587,
     secure: true,
     auth: {
       user: process.env.MAIL_USER, // GMAIL_USER -> MAIL_USER
@@ -33,11 +34,16 @@ const sendForgotOTPMail = async (user, otp) => {
         to
         complete the password reset process:</small>
     </div>
-    <button
+    
+  <a
+                        href={${process.env.CLIENT_URL}/reset-password/${token}}
+                        target="_blank">
+                        <button
       style="
   text-align:center; width: fit-content;min-width: 100px;    display: block;
   padding: 14px 44px 13px;
-  line-height: 120%; margin: 30px auto; background-color: #037d41 ; color:#ffff; border:none;border-radius: 5px;">${otp}</button>
+  line-height: 120%; margin: 30px auto; background-color: #037d41 ; color:#ffff; border:none;border-radius: 5px;">Change Password</button>
+                        </a>
   
     <div style="text-align: center; padding:10px">
       <small style="color: #636465; font-size: 12px;"><span style="color:red;">*</span> If you did not initiate this
@@ -45,35 +51,22 @@ const sendForgotOTPMail = async (user, otp) => {
         contact our
         support team immediately.</small>
     </div>
-    <div
-            style="background-color: #d9eee4; padding:10px; font-size:14px;color:#003399;line-height:160%;text-align:center;word-wrap:break-word">
-            <p style="font-size:14px;line-height:160%"><span style="font-size:20px;line-height:32px"><strong>Get in
-                        touch</strong></span></p>
-            <p style="font-size:14px;line-height:160%"><span style="font-size:16px;line-height:25.6px;color:#000000"><a
-                        href="mailto:support@turkeytrademarket.com"
-                        target="_blank">support@turkeytrademarket.com</a></span>
-            </p>
-        </div>
-        <div style="color:#ffff; background-color: #037d41; padding: 1px;">
-            <p style="font-size:14px;line-height:180% ; color:#ffff">Copyrights © Turkeytrademarket AB
-                All
-                Rights Reserved</p>
-        </div>
+  
+       
   </div>
     `,
   };
 
+  let status = true;
   transporter.sendMail(mailOptions, (error, info) => {
+    if (info) {
+      status = true;
+    }
     if (error) {
-      console.log(error);
-    } else {
-      return true;
+      status = false;
     }
   });
-
-  // if (emailSent === true) {
-  //   return true;
-  // }
+  return status;
 };
 
 const sendWelcomeMail = async (data) => {
@@ -90,7 +83,7 @@ const sendWelcomeMail = async (data) => {
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: data?.email,
-    subject: `Welcome to Turkeytrademarket – `,
+    subject: `Welcome to  – `,
     html: `
     <body style="background-color: #f4f4f4; margin: 0; padding: 0;">
     <div
@@ -171,6 +164,6 @@ const sendWelcomeMail = async (data) => {
 };
 
 module.exports = {
-  sendForgotOTPMail,
+  sendForgotPasswordMail,
   sendWelcomeMail,
 };
