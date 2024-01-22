@@ -2,11 +2,8 @@ require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const sendForgotPasswordMail = async (user, token) => {
-  console.log(token);
   const transporter = nodemailer.createTransport({
-    host: process.env.MAIL_USER,
-    port: 587,
-    secure: true,
+    service: "Gmail",
     auth: {
       user: process.env.MAIL_USER, // GMAIL_USER -> MAIL_USER
       pass: process.env.MAIL_PASS, // GMAIL_PASS -> MAIL_PASS
@@ -71,9 +68,7 @@ const sendForgotPasswordMail = async (user, token) => {
 
 const sendWelcomeMail = async (data) => {
   const transporter = nodemailer.createTransport({
-    host: "",
-    port: 465,
-    secure: true,
+    service: "Gmail",
     auth: {
       user: process.env.MAIL_USER, // GMAIL_USER -> MAIL_USER
       pass: process.env.MAIL_PASS, // GMAIL_PASS -> MAIL_PASS
