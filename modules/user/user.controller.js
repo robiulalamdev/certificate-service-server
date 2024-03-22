@@ -48,7 +48,10 @@ const registerUser = async (req, res) => {
         password: bcrcypt.hashSync(req.body.password),
         otp,
       });
+      console.log(newUser);
+
       const user = await newUser.save();
+      console.log(user);
       await sendVerificationCode(user, otp);
       res.status(200).send({
         success: true,

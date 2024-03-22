@@ -35,7 +35,7 @@ const jobSchema = new mongoose.Schema(
       },
       joint_debtor_name: {
         type: String,
-        required: true,
+        required: false,
       },
       if_applicable: {
         type: String,
@@ -72,17 +72,17 @@ const jobSchema = new mongoose.Schema(
         type: Object,
         describe_document: {
           type: String,
-          required: true,
+          required: false,
         },
         attach: {
           type: String,
-          required: true,
+          required: false,
         },
         ecf_docket_reference_number: {
           type: String,
-          required: true,
+          required: false,
         },
-        required: true,
+        required: false,
       },
       document_3: {
         type: Object,
