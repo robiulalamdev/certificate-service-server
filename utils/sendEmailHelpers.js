@@ -33,7 +33,7 @@ const sendForgotPasswordMail = async (user, token) => {
     </div>
     
   <a
-                        href={${process.env.CLIENT_URL}/reset-password/${token}}
+                        href="${process.env.CLIENT_URL}/reset-password/${token}"
                         target="_blank">
                         <button
       style="
